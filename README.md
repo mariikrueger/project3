@@ -1,49 +1,74 @@
-VR View
-=======
+# ES6-Promise (subset of [rsvp.js](https://github.com/tildeio/rsvp.js))
 
-Please read the documentation available at
-<https://developers.google.com/vr/concepts/vrview>.
+This is a polyfill of the [ES6 Promise](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-promise-constructor). The implementation is a subset of [rsvp.js](https://github.com/tildeio/rsvp.js), if you're wanting extra features and more debugging options, check out the [full library](https://github.com/tildeio/rsvp.js).
 
-<br>
-<br>
+For API details and how to use promises, see the <a href="http://www.html5rocks.com/en/tutorials/es6/promises/">JavaScript Promises HTML5Rocks article</a>.
 
-* [Image Example](http://theta360.guide/googlevr/googlevr.html)
-* [Video Example](http://theta360.guide/googlevr/video-sample.html)
+## Downloads
 
-<br>
-![](img/screenshot.png)
+* [es6-promise](https://raw.githubusercontent.com/jakearchibald/es6-promise/master/dist/es6-promise.js)
+* [es6-promise-min](https://raw.githubusercontent.com/jakearchibald/es6-promise/master/dist/es6-promise.min.js)
 
-__To Use__
+## Node.js
 
-Open `googlevr.html` in a browser.
+To install:
 
-Drop your theta images into `img`
+```sh
+npm install es6-promise
+```
 
-Open `googlevr.html` in your editor.
+To use:
+
+```js
+var Promise = require('es6-promise').Promise;
+```
+
+## Bower
+
+To install:
+
+```sh
+bower install es6-promise --save
+```
 
 
-    <iframe width="100%" height="700px"
-    allowfullscreen
-    frameborder="0"
-    src="index.html?image=img/beach.jpg&is_stereo=false"></iframe>
+## Usage in IE<9
 
-change the filename `beach.jpg` to your own image file.
+`catch` is a reserved word in IE<9, meaning `promise.catch(func)` throws a syntax error. To work around this, you can use a string to access the property as shown in the following example.
 
-That's it.
+However, please remember that such technique is already provided by most common minifiers, making the resulting code safe for old browsers and production:
 
-___attributes___
+```js
+promise['catch'](function(err) {
+  // ...
+});
+```
 
-* width="100%" makes the frame go full-width.
-* height="300px" sets the height of the frame.
-* allowfullscreen makes it possible for the frame to go into fullscreen mode.
-* frameborder="0" hides the border around the frame.
+Or use `.then` instead:
 
-___Control parameters___
+```js
+promise.then(undefined, function(err) {
+  // ...
+});
+```
 
-* image or video: {String} URL of image or video to load. (required)
-* is_stereo: {Boolean} true if content is in stacked stereo format. (optional, default false)
-* preview: {String} URL of still preview to load first. (optional, default none)
-* start_yaw: {Number} Initial yaw of viewer, in degrees. (optional, default 0)
-* is_yaw_only: {Boolean} true if motion is restricted to yaw only. (optional, default false)
+## Auto-polyfill
 
-![Analytics](https://ga-beacon.appspot.com/UA-73311422-5/liveviewer-p5)
+To polyfill the global environment (either in Node or in the browser via CommonJS) use the following code snippet:
+
+```js
+require('es6-promise').polyfill();
+```
+
+Notice that we don't assign the result of `polyfill()` to any variable. The `polyfill()` method will patch the global environment (in this case to the `Promise` name) when called.
+
+## Building & Testing
+
+You will need to have PhantomJS installed globally in order to run the tests.
+
+`npm install -g phantomjs`
+
+* `npm run build` to build
+* `npm test` to run tests
+* `npm start` to run a build watcher, and webserver to test
+* `npm run test:server` for a testem test runner and watching builder
